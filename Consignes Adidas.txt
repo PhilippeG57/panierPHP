@@ -1,0 +1,13 @@
+Le directeur d'Adidas a visité votre projet réalisé pour GLaDalle est souhaite faire appel à vos services pour un nouveau projet
+
+Ils souhaitent, en plus des maillots et chaussures, mettre en vente des montres.
+
+Vous devez donc créer une page d'accueil avec 4 montres, 4 chaussures et 4 maillots.
+La catégorie sert uniquement à diriger vers les produits concernés.
+
+Un développeur front de Adidas a préparé tout le HTML, CSS et JavaScript. On vous demande de réaliser le PHP.
+Toutes les pages nécessaires sont crées mais sans PHP.
+
+Téléchargez le dossier avec les maquettes, images, fichiers, la consigne et le fichier SQL.
+
+A vous de jouer !
