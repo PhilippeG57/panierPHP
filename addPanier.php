@@ -1,4 +1,5 @@
 <?php
+/* AJOUT DANS LE PANIER PAR LA PAGE DETAILS */
 session_start();
 include('pdo.php');
 

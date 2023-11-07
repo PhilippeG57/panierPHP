@@ -7,7 +7,7 @@ $stmt->bindValue(':code', $_SESSION['couponId'], PDO::PARAM_STR);
 $stmt->execute();
 $coupon = $stmt->fetch();
 
-//APPLIQUER LA REMISE AUX PRODUITS DU PANIER
+
 	$stmt = $pdo->prepare('SELECT * from  produits P, panier Pa 
 	where Pa.produits = P.id 
 	AND Pa.userTemp = :userTemp');
@@ -31,12 +31,11 @@ $coupon = $stmt->fetch();
 			':id'=>$res['id'],
 			':prixTotal'=>$newPrix,
 			':coupons'=>null
-			
 		));
 		
 		$req->closeCursor();
 		
-		unset($_SESSION['couponCode']);
+	unset($_SESSION['couponCode']);
 	unset($_SESSION['couponId']);
 	unset($_SESSION['couponRegle']);
 	

@@ -85,15 +85,91 @@ include('pdo.php');
                                 </div>
                             </div>
 
-
+                            <?php
+                            if(isset($_SESSION['userTemp'])){
+                                $stmt = $pdo->prepare('SELECT P.quantite as qtProduit, P.*, Pa.* from produits P, panier Pa
+                                WHERE Pa.produits = P.id AND Pa.userTemp = :userTemp');
+                                $stmt->bindValue(':userTemp', $_SESSION['userTemp'], PDO::PARAM_INT);
+                                $stmt->execute();
+                                $productPanier = $stmt->fetchALL();
+                                $nbProduit = count($productPanier);
+                            }else{
+                                $nbProduit = 0;
+                            }
+                            ?>
                            <!-- Cart -->
-                            <div class="cart-area">
-                                <a href="cart.php"><div class="cart--btn"><i class="icofont-cart"></i> <span class="cart_quantity">0</span></div></a>
+                           <div class="cart-area">
+                                <div class="cart--btn"><i class="icofont-cart"></i> <span class="cart_quantity"><?php echo $nbProduit ?></span></div>
+
+                                <!-- Carré qui s'affiche quand on a le curseur sur le cart -->
+                                <div class="cart-dropdown-content">
+                                    <ul class="cart-list">
+									
+									<?php
+									$total = 0;
+									if(isset($productPanier))
+									{
+										foreach($productPanier as $res)
+										{
+										$total = $total + $res['prixTotal'];
+										?>
+                                        <li>
+                                            <div class="cart-item-desc">
+                                                <a href="#" class="image">
+                                                    <img src="img/<?php echo $res['image']?>" class="cart-thumb" alt="">
+                                                </a>
+                                                <div>
+                                                    <a href="#"><?php echo $res['nom']?> </a>
+                                                    <p><?php echo $res['quantite']?> x - <span class="price"><?php echo number_format($res['prix'], 2, ',', ' '); ?> €</span></p>
+                                                </div>
+                                            </div>
+                                            <a href="delPanier.php?id=<?php echo $res['id']?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce produit de votre panier ?')">
+												<span class="dropdown-product-remove"><i class="icofont-bin"></i></span>
+											</a>
+                                        </li>
+										<?php } ?>
+										  
+										</ul>
+										<div class="cart-pricing my-4">
+											<ul>											
+												<li>
+													<span>Total:</span>
+													<span><?php echo number_format($total, 2, ',', ' '); ?> €</span>
+												</li>
+											</ul>
+										</div>
+										<?php if ($nbProduit!=0)
+										{ ?>
+										<div class="cart-box">
+											<a href="cart.php" class="btn btn-primary d-block">Voir le panier</a>
+										</div>
+										<?php
+										}
+									}
+									else{
+										echo "Vous n'avez aucun article dans votre panier.";
+									}
+									?>
+                                </div>
                             </div>
-							<div>
-								<a href="connexion.php">Se connecter / S'inscrire </a>
-							</div>				
-							
+
+
+
+
+
+
+
+
+
+                            <?php
+                            if(!isset($_SESSION['userEmail'])){
+                            ?>
+                                <div>
+                                    <a href="connexion.php">Se connecter / S'inscrire </a>
+                                </div>				
+                            <?php
+                            }else{
+                            ?>
 							<div class="classy-navbar-toggler">
                             <span class="navbarToggler"></span>
 								</div>
@@ -108,7 +184,7 @@ include('pdo.php');
 									<!-- Nav -->
 									<div class="classynav">
 										<ul>
-											<li><a href="#">Bienvenue, </a>
+											<li><a href="#">Bienvenue, <?php echo $_SESSION['userPrenom'] ?></a>
 												<ul class="dropdown">
 													<li><a href="profil.php">Profil</a></li>
 													<li><a href="deconnexion.php">Se déconnecter</a></li>
@@ -117,7 +193,8 @@ include('pdo.php');
 										</ul>
 									</div>
 								</div>					
-							<?php 
+							<?php
+                            }
 							?>
                         </div>
                     </nav>

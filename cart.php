@@ -1,6 +1,11 @@
 <?php
+    include('pdo.php');
     include("header.php");
+
+
+    if($nbProduit > 0){
 ?>
+
     <!-- Breadcumb Area -->
                 <div class="col-12">
                     <br><h1 style="text-align:center">VOICI VOTRE PANIER</h1>
@@ -12,13 +17,25 @@
         <div class="container">
             <div class="row justify-content-between">
                 <div class="col-12">
-				<div class="alert alert-danger" role="alert">
-				  Attention : stock insuffisant !
-				</div>
+                <?php
+                if(isset($_GET['message']) && $_GET['message'] == "outstock"){ 
+                ?>
+                    <div class="alert alert-danger" role="alert">
+                    Attention : stock insuffisant !
+                    </div>
+                <?php
+                }
+                ?>
 				
+                <?php
+                if(isset($_GET['message']) && $_GET['message'] == "validate"){ 
+                ?>
 				<div class="alert alert-success" role="alert">
 				  Votre panier à bien été mis à jour
 				</div>
+                <?php
+                }
+                ?>
                     <div class="cart-table">
                         <div class="table-responsive">
                             <table class="table table-bordered mb-30">
@@ -33,37 +50,44 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-								
-                                    <tr>
+								<?php
+                                $total=0;
+                                foreach($productPanier as $res){
+                                    $total += $res['prixTotal'];
+                                ?>                           
+                                <tr>
                                         <th scope="row">
-                                            <a href="#" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce produit de votre panier ?')">
+                                            <a href="delPanier.php?id=<?php echo $res['id'] ?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce produit de votre panier ?')">
 												<i class="icofont-close"></i>
 											</a>
                                         </th>
                                         <td>
-                                            <img src="img/5e5fbf7acf41a.png" alt="Product">
+                                            <img src="img/<?php echo $res['image'] ?>" alt="Product">
                                         </td>
                                         <td>
-                                            <a href="#">Nom de l'article</a><br>
-											<small>En stock : Nombre</small>
+                                            <a href="#"><?php echo $res['nom'] ?></a><br>
+											<small>En stock : <?php echo $res['qtProduit'] ?></small>
                                         </td>
-                                        <td>99.99 €</td>
+                                        <td><?php echo number_format($res['prix'], 2, ',', ' '); ?> €</td>
                                         <td>
                                             <div class="quantity">
                                                 
-												<a href="#" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce produit de votre panier ?')"	>
+												<a href="updateQt.php?panier=<?php echo $res['id']?>&action=remove" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce produit de votre panier ?')"	>
 													<span style="font-size:25px; padding-right:20px">-</span> 
 												</a>
 												
-												999
+												<?= $res['quantite'] ?>
 												
-												<a href="#">
+												<a href="updateQt.php?panier=<?php echo $res['id']?>&action=add">
 												 <span style="font-size:25px; padding-left:20px">+</span>
 												</a>
                                             </div>
                                         </td>
-                                        <td>999 €</td>
+                                        <td><?php echo number_format($res['prixTotal'], 2, ',', ' '); ?> €</td>
                                     </tr>
+                                <?php
+                                }
+                                ?>
                                 </tbody>
                             </table>
                         </div>
@@ -74,22 +98,34 @@
                     <div class="cart-apply-coupon mb-30">
                         <h6>Avez vous un coupon?</h6>
                         <p>Entrer le code de la remise</p>
+
+                <?php
+                if(isset($_GET['message']) && $_GET['message']=="invalidecode"){
+                ?>
 				<div class="alert alert-danger" role="alert">
 				  Attention : le code remise saisi est incorrect !
 				</div>
+                <?php
+                }
+                if(!isset($_SESSION['couponCode'])){
+                ?>
                         <!-- Form -->
                         <div class="coupon-form">
-                            <form action="#" method="POST">
+                            <form action="addCoupon.php?panier=" method="POST">
                                 <input type="text" class="form-control" name="code" placeholder="Entrer le code">
                                 <button type="submit" class="btn btn-primary">Valider</button>
                             </form>
                         </div>
+                <?php
+                }
+                else{
+                ?>
 				<!-- Form -->
                         <div class="coupon-form">
-						<span style="color:green; font-weight:bold">
-						Coupon remise : Kev20 (-99%)</span>
-						<a href="delCoupon.php">[Supprimer ce coupon]</a>
+						    <span style="color:green; font-weight:bold">Coupon remise : <?= $_SESSION['couponCode'] ?> (-<?= $_SESSION['couponRegle'] ?>)</span>
+						    <a href="delCoupon.php">[Supprimer ce coupon]</a>
 						</div>
+                <?php } ?>
                     </div>
                 </div>
 
@@ -101,29 +137,40 @@
                                 <tbody>
                                     <tr>
                                         <td>TOTAL</td>
-                                        <td>99.99 €</td>
+                                        <td><?php echo number_format($total, 2, ',', ' '); ?> €</td>
                                     </tr>
+                                    <?php 
+                                    if(isset($_SESSION['couponCode'])){
+                                    ?>
 									<tr>
                                         <td>Dont remise</td>
-                                        <td>- 99%</td>
+                                        <td>- <?php echo $_SESSION['couponRegle'] ?></td>
                                     </tr>
+                                    <?php
+                                    }
+                                    ?>
                                     <tr>
                                         <td>Frais de ports</td>
                                         <td>10.00 €</td>
                                     </tr>
 									 <tr>
                                         <td>TOTAL HT</td>
-                                        <td>99 €</td>
+                                        <td><?php
+                                        $totalHt = $total/1.2;
+                                        echo number_format($totalHt, 2, ',', ' '); ?> €
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>TVA (20%)</td>
                                         <td>
-                                            99 €
+                                        <?php
+                                        $tva = $total - $totalHt;
+                                        echo number_format($tva, 2, ',', ' '); ?> €
 										</td>
                                     </tr>
                                     <tr>
                                         <td>TOTAL TTC</td>
-                                        <td>99 €</td>
+                                        <td><?php echo number_format($total+10, 2, ',', ' ') ?> €</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -136,9 +183,14 @@
     </div>
     <!-- Cart Area End -->
     <br>
-			<div class="col-12">
-					<br><h1 style="text-align:center">VOTRE PANIER EST VIDE.</h1>
-			</div><br><br>
+    <?php
+    }
+    else{ 
+        ?>
+        <div class="col-12">
+                <br><h1 style="text-align:center">VOTRE PANIER EST VIDE.</h1>
+        </div><br><br>
+    <?php } ?>
     <!-- Footer Area -->
     <footer class="footer_area section_padding_100_0">
         <div class="container">
