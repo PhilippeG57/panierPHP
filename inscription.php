@@ -14,7 +14,9 @@
 	</header>
 		<br>
 	<body>
-				<span style="color:red; padding-left:40px">Erreur : l'email ou le pseudo existe déja.</span>
+		<?php if(isset($_GET['inscription']) && $_GET['inscription']=="error"){ ?>
+		<span style="color:red; padding-left:40px">Erreur : l'email ou le pseudo existe déja.</span>
+		<?php } ?>
 		<div class="container-fluid"  style="padding-left:10%">
 			<div class="row">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="padding:20px 0px 40px 8%">

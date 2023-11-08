@@ -80,8 +80,10 @@ include('pdo.php');
                                 <div class="search-btn"><i class="icofont-search"></i></div>
                                 <!-- Form -->
                                 <div class="search-form">
-                                    <input type="search" class="form-control" placeholder="Search">
-                                    <input type="submit" class="d-none" value="Send">
+                                    <form action="recherche.php" method="get">
+                                        <input type="search" name="search" class="form-control" placeholder="Search" required>
+                                        <input type="submit" class="form-control" value="Envoyer">
+                                    </form>
                                 </div>
                             </div>
 

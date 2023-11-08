@@ -48,7 +48,7 @@
 						<br><br>
 						<Input type="checkbox" name="remember" checked>
 						<label style="font-size:20px" >Se souvenir de moi</label><br>
-						<a href="inscription.php">Pas encore conecté ? Clique ici</a>
+						<a href="inscription.php">Pas encore inscrit ? Clique ici</a>
 					</form>
 					
 				</div>
